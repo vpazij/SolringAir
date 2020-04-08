@@ -64,35 +64,86 @@ vars.put(&quot;link&quot;, &quot;randomuser.me&quot;);
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-            <collectionProp name="Asserion.test_strings">
-              <stringProp name="3314326">last</stringProp>
-              <stringProp name="97440432">first</stringProp>
-              <stringProp name="110371416">title</stringProp>
-            </collectionProp>
-            <stringProp name="Assertion.custom_message"></stringProp>
-            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-            <boolProp name="Assertion.assume_success">false</boolProp>
-            <intProp name="Assertion.test_type">16</intProp>
-            <stringProp name="Assertion.scope">all</stringProp>
-          </ResponseAssertion>
-          <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
-            <stringProp name="JSONPostProcessor.referenceNames">gender1</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$.results[0].gender</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-            <stringProp name="Sample.scope">all</stringProp>
+            <stringProp name="JSONPostProcessor.referenceNames">gender1; titles; firstNames; lastNames</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.results[0].gender; $..title;  $..first; $..last</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers">0; -1; -1; -1</stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">0; 0; 0; 0</stringProp>
           </JSONPostProcessor>
           <hashTree/>
-          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <boolProp name="resetInterpreter">false</boolProp>
-            <stringProp name="script">var gender1 = vars.get(&quot;gender1&quot;);
-log.info(&quot;value of GENDER1 in GET1 = &quot; + gender1);</stringProp>
-          </BeanShellPostProcessor>
-          <hashTree/>
         </hashTree>
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+          <boolProp name="displayJMeterProperties">false</boolProp>
+          <boolProp name="displayJMeterVariables">true</boolProp>
+          <boolProp name="displaySystemProperties">false</boolProp>
+        </DebugSampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Response contains titles" enabled="true">
+          <stringProp name="scriptLanguage">javascript</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">
+var titles = [];
+var titleLength = vars.get(&quot;titles_matchNr&quot;);
+
+for(var i=1; i&lt;=titleLength; i++) {
+	titles[i] = vars.get(&quot;titles_&quot; + i);
+	if(!titles[i]) {
+		throw new Error(&quot;User in response has not title&quot;);
+		} 	
+	log.info(titles[i]);
+	}
+
+
+
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Response contains first names" enabled="true">
+          <stringProp name="scriptLanguage">javascript</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">
+var firstNames = [];
+var firstNamesLength = vars.get(&quot;firstNames_matchNr&quot;);
+
+for(var i=1; i&lt;=firstNamesLength; i++) {
+	firstNames[i] = vars.get(&quot;firstNames_&quot; + i);
+	if(!firstNames[i]) {
+		throw new Error(&quot;User in response has not firstName&quot;);
+		} 	
+	log.info(firstNames[i]);
+	}
+
+
+
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Response contains last names" enabled="true">
+          <stringProp name="scriptLanguage">javascript</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">
+var lastNames = [];
+var lastNamesLength = vars.get(&quot;lastNames_matchNr&quot;);
+
+for(var i=1; i&lt;=lastNamesLength; i++) {
+	lastNames[i] = vars.get(&quot;lastNames_&quot; + i);
+	if(!lastNames[i]) {
+		throw new Error(&quot;User in response has not lastName&quot;);
+		} 	
+	log.info(lastNames[i]);
+	}
+
+
+
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET2" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -129,65 +180,24 @@ log.info(&quot;value of GENDER1 in GET1 = &quot; + gender1);</stringProp>
           </JSONPostProcessor>
           <hashTree/>
         </hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Compare values of gender" enabled="true">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="script">var gender1 = vars.get(&quot;gender1&quot;);
 var gender2 = vars.get(&quot;gender2&quot;);
 
-//log.info(&quot;value of GENDER1 in JSR223 Sampler = &quot; + gender1);
-//log.info(&quot;value of GENDER2 in JSR223 Sampler = &quot; + gender2);
-
 if(gender1 == gender2) {
-	log.info(&quot;EVERYTHING GONNA BE ALRIGHT&quot;);
+	log.info(&quot;Values of gender are equal&quot;);
 	}else {
-		throw new Error(&quot;error&quot;);
+		throw new Error(&quot;Values are not equal&quot;);
 		}
 
 
 </stringProp>
           <stringProp name="scriptLanguage">javascript</stringProp>
         </JSR223Sampler>
-        <hashTree>
-          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
-            <boolProp name="ResultCollector.error_logging">false</boolProp>
-            <objProp>
-              <name>saveConfig</name>
-              <value class="SampleSaveConfiguration">
-                <time>true</time>
-                <latency>true</latency>
-                <timestamp>true</timestamp>
-                <success>true</success>
-                <label>true</label>
-                <code>true</code>
-                <message>true</message>
-                <threadName>true</threadName>
-                <dataType>true</dataType>
-                <encoding>false</encoding>
-                <assertions>true</assertions>
-                <subresults>true</subresults>
-                <responseData>false</responseData>
-                <samplerData>false</samplerData>
-                <xml>false</xml>
-                <fieldNames>true</fieldNames>
-                <responseHeaders>false</responseHeaders>
-                <requestHeaders>false</requestHeaders>
-                <responseDataOnError>false</responseDataOnError>
-                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
-                <assertionsResultsToSave>0</assertionsResultsToSave>
-                <bytes>true</bytes>
-                <sentBytes>true</sentBytes>
-                <url>true</url>
-                <threadCounts>true</threadCounts>
-                <idleTime>true</idleTime>
-                <connectTime>true</connectTime>
-              </value>
-            </objProp>
-            <stringProp name="filename"></stringProp>
-          </ResultCollector>
-          <hashTree/>
-        </hashTree>
+        <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
